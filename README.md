@@ -14,12 +14,15 @@ For compling the application in the command line
 
 Old Way [Deprecated] :
 $ javac -cp ../lib/org.json-20120521.jar CallWebservice.java WeatherForecast.java
+
 New Way :
 $ ant
 
 And for runing the appication
+
 Old Way [Deprecated] :
 $ java -cp .:../lib/org.json-20120521.jar CallWebservice
+
 New Way :
 $ ant
 
