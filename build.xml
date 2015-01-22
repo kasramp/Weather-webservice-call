@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<project name="CubidaSISTSO" default="main" basedir=".">
+	
+	<!-- set global properties for this build -->
+   	<property name="jar.name" value="WeatherWebserivceCall.jar"/>
+	<property name="src.dir" value="src"/>
+	<property name="build.dir" value="build"/>
+	<property name="build.deploy.dir" value="${build.dir}/deploy"/>
+	<property name="build.classes.dir" value="${build.dir}/classes"/>
+	<property name="lib.dir" value="lib"/>
+	   
+	<!-- define classpath -->	
+	<path id="base.path">
+		<pathelement location="${build.classes.dir}" />
+		<pathelement location="${lib.dir}/org.json-20120521.jar"/>
+	</path>
+
+   	<target name="init">
+      	<mkdir dir="${build.classes.dir}"/>
+   		<mkdir dir="${build.deploy.dir}"/>
+   	</target>     
+	
+	<!-- Compile the java code from ${src.dir} into ${build.classes.dir} -->
+	<target name="compile" depends="init">
+		<javac
+			srcdir="${src.dir}"
+			destdir="${build.classes.dir}"
+			debug="on"
+			deprecation="off"
+			optimize="on"
+			includes="*.java"
+			classpathref="base.path"
+		>      	
+		</javac>
+	</target>	
+		
+	<!-- Put everything in ${build.classes.dir} into the ${build.deploy.dir}/${jar}.jar file -->
+	<target name="jar" depends="compile">
+		<echo message="Compiling jar files"/>
+		<delete file="${build.deploy.dir}/${jar.name}"/>
+		<jar destfile="${build.deploy.dir}/${jar.name}" basedir="${build.classes.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="CallWebservice"/>
+			</manifest>
+			<zipgroupfileset dir="${lib.dir}" includes="*.jar"/>
+		</jar>
+	</target>
+
+	<target name="main" depends="jar">
+	</target>	  
+
+   <!-- Cleans up the current ${build.dir} -->
+   <target name="clean">
+      <delete dir="${build.dir}}"/>
+   </target>
+   
+</project>

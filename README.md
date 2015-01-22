@@ -12,12 +12,16 @@ The result recieved from web-service is parsed with JSON library which is also a
 
 For compling the application in the command line
 
-javac -cp ../lib/org.json-20120521.jar CallWebservice.java WeatherForecast.java
+Old Way [Deprecated] :
+$ javac -cp ../lib/org.json-20120521.jar CallWebservice.java WeatherForecast.java
+New Way :
+$ ant
 
 And for runing the appication
-
-java -cp .:../lib/org.json-20120521.jar CallWebservice
-
+Old Way [Deprecated] :
+$ java -cp .:../lib/org.json-20120521.jar CallWebservice
+New Way :
+$ ant
 
 For more information contact,
 kasra@madadipouya.com 
