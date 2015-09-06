@@ -23,9 +23,11 @@ New Way :
 And for runing the appication
 
 Old Way [Deprecated] :
+
 	$ java -cp .:../lib/org.json-20120521.jar CallWebservice
 
 New Way :
+
 	$ ant
 
 ##Contact
