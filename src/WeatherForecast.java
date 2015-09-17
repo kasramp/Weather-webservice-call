@@ -26,6 +26,8 @@ import java.util.TreeMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.google.gson.Gson;
+
 public class WeatherForecast {
 
 	/**
@@ -52,7 +54,7 @@ public class WeatherForecast {
 				
 			} else {
 				
-				results.put("Country-City error : ", "Country or City name did not provided!!");
+				results.put("Country-City error : ", "Country or City name have not been provided!!");
 				throw new Exception();
 				
 			}
@@ -79,7 +81,16 @@ public class WeatherForecast {
 			
 			if(output != null){
 				
-				JSONObject jsonObject = new JSONObject(output);
+				WebServiceResponseJson resultClass = parseJsonObj(output);
+				results.put("Country", resultClass.sys.country);
+				results.put("Weather description", resultClass.weather.get(0).description);
+				results.put("Current temperature", resultClass.main.temp.toString() + " °C");
+				results.put("Maximum temperature", resultClass.main.temp_max.toString() + " °C");
+				results.put("Minimum temperature", resultClass.main.temp_min.toString() + " °C");
+				results.put("Humidity level", resultClass.main.humidity.toString());
+				results.put("Wind speed", resultClass.wind.speed.toString() + " Km");
+				/*JSONObject jsonObject = new JSONObject(output);
+
 				JSONObject sys = jsonObject.getJSONObject("sys");
 				JSONArray weather = jsonObject.getJSONArray("weather");
 				JSONObject main = jsonObject.getJSONObject("main");
@@ -90,7 +101,7 @@ public class WeatherForecast {
 				results.put("Maximum temperature", Double.toString(main.getDouble("temp_max")) + " °C");
 				results.put("Minimum temperature", Double.toString(main.getDouble("temp_min")) + " °C");
 				results.put("Humidity level", Double.toString(main.getDouble("humidity")));
-				results.put("Wind speed", Double.toString(wind.getDouble("speed")) + " Km");
+				results.put("Wind speed", Double.toString(wind.getDouble("speed")) + " Km");*/
 			} else {
 				
 				throw new Exception("Unable get result from web-service call!");
@@ -106,5 +117,15 @@ public class WeatherForecast {
 			
 		}
 	}
+	private WebServiceResponseJson parseJsonObj(String jsonString) {
+        WebServiceResponseJson result = null;
+        try {
+            Gson gson = new Gson();
+            result = gson.fromJson(jsonString,WebServiceResponseJson.class);
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        return result;
+    }
 
 }

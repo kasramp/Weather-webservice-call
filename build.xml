@@ -28,6 +28,7 @@ Author(s):
 	<path id="base.path">
 		<pathelement location="${build.classes.dir}" />
 		<pathelement location="${lib.dir}/org.json-20120521.jar"/>
+		<pathelement location="${lib.dir}/gson-2.3.1.jar"/>
 	</path>
 
    	<target name="init">
