@@ -46,7 +46,7 @@ public class WeatherForecast {
 			String country = input.next(); 
 			System.out.println("Please enter city name");
 			String city = input.next();
-			String urlString = "http://api.openweathermap.org/data/2.5/weather?q=";
+			String urlString = "http://api.openweathermap.org/data/2.5/weather?appid=c15e2598880e57fad011a64061948fac&q=";
 			
 			if ((country != null && country.length()>0)&& (city != null && city.length()>0)){
 				

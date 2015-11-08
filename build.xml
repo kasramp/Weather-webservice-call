@@ -19,7 +19,7 @@ Author(s):
 	<!-- set global properties for this build -->
    	<property name="jar.name" value="WeatherWebserivceCall.jar"/>
 	<property name="src.dir" value="src"/>
-	<property name="build.dir" value="build"/>
+	<property name="build.dir" value="JarFile"/>
 	<property name="build.deploy.dir" value="${build.dir}/deploy"/>
 	<property name="build.classes.dir" value="${build.dir}/classes"/>
 	<property name="lib.dir" value="lib"/>
@@ -33,7 +33,7 @@ Author(s):
 
    	<target name="init">
       	<mkdir dir="${build.classes.dir}"/>
-   		<mkdir dir="${build.deploy.dir}"/>
+   		<!-- <mkdir dir="${build.deploy.dir}"/> -->
    	</target>     
 	
 	<!-- Compile the java code from ${src.dir} into ${build.classes.dir} -->
@@ -53,8 +53,8 @@ Author(s):
 	<!-- Put everything in ${build.classes.dir} into the ${build.deploy.dir}/${jar}.jar file -->
 	<target name="jar" depends="compile">
 		<echo message="Compiling jar files"/>
-		<delete file="${build.deploy.dir}/${jar.name}"/>
-		<jar destfile="${build.deploy.dir}/${jar.name}" basedir="${build.classes.dir}">
+		<delete file="${build.dir}/${jar.name}"/>
+		<jar destfile="${build.dir}/${jar.name}" basedir="${build.classes.dir}">
 			<manifest>
 				<attribute name="Main-Class" value="CallWebservice"/>
 			</manifest>
