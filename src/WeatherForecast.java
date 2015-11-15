@@ -13,119 +13,122 @@
  * © 2015 Kasra Madadipouya <kasra@madadipouya.com>
  */
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.TreeMap;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import com.google.gson.Gson;
 
 public class WeatherForecast {
-
-	/**
-	 * @param args
-	 */
-
-	
+	private TreeMap<String,String> countriesCodeName;
+	private Boolean isUserQuery;
+	public WeatherForecast() {
+		this.countriesCodeName = new TreeMap<String,String>();
+		this.isUserQuery = false;
+	}
+	public TreeMap<String,String> getWeather(Boolean isUserQuery) {
+		this.isUserQuery = isUserQuery;
+		return this.getWeather();
+	}
 	public TreeMap<String,String> getWeather()
 	{
+		loadCountriesToMap();
 		TreeMap<String,String> results = new TreeMap<String,String>();
 		try {
-			
-			// Construct request String
-			Scanner input = new Scanner(System.in);
-			System.out.println("Please enter country name");
-			String country = input.next(); 
-			System.out.println("Please enter city name");
-			String city = input.next();
-			String urlString = "http://api.openweathermap.org/data/2.5/weather?appid=c15e2598880e57fad011a64061948fac&q=";
-			
-			if ((country != null && country.length()>0)&& (city != null && city.length()>0)){
-				
-				urlString += city + "," + country;
-				
+			String city = "";
+			String country = "";
+			String region = "";
+			if(this.isUserQuery) {
+				// Construct request String
+				Scanner input = new Scanner(System.in);
+				System.out.println("Please enter country name");
+				country = input.next();
+				country = country.trim();
+				System.out.println("Please enter city name");
+				city = input.next();
+				if(city.length()>2) {
+					city = Character.toUpperCase(city.charAt(0)) + city.substring(1).toLowerCase();
+				}
+				//city = city.trim();
+				input.close(); 
 			} else {
-				
+				LocationDetectorResponseJson ldrj = new LocationDetectorResponseJson();
+				try {
+					ldrj = ldrj.detectLocation();
+				} catch(Exception ex) {
+					ex.printStackTrace();
+					results = ldrj.error;
+					throw new Exception("Error in detecting location function");
+				}
+				country = ldrj.country;
+				city = ldrj.city;
+				region = ldrj.region + ",";
+			}
+			String urlString = "http://api.openweathermap.org/data/2.5/weather?appid=c15e2598880e57fad011a64061948fac&q=";
+			if ((country != null && country.length()>0)&& (city != null && city.length()>0)){
+				urlString += city + "," + country;
+			} else {
 				results.put("Country-City error : ", "Country or City name have not been provided!!");
 				throw new Exception();
-				
 			}
-			
 			urlString += "&units=metric";
 			URL url = new URL(urlString);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
 			conn.setRequestProperty("Accept","application/json");
-			
 			if(conn.getResponseCode() != 200){
-				
 				int errorCodeInt = conn.getResponseCode();
 				results.put("HTTP error code : ", Integer.toString(errorCodeInt));
 				results.put("HTTP error message : ", conn.getResponseMessage());
 				throw new Exception();
-					
 			}
 			BufferedReader br = new BufferedReader(new InputStreamReader(
 					(conn.getInputStream())));
 			String output = null;
-			//System.out.println("Result from HTTP request!");
 			output = br.readLine();
-			
 			if(output != null){
-				
 				WebServiceResponseJson resultClass = parseJsonObj(output);
-				results.put("Country", resultClass.sys.country);
+				results.put("Country", countriesCodeName.get(resultClass.sys.country));
+				results.put("City", (region.isEmpty()?"":region) + city);
 				results.put("Weather description", resultClass.weather.get(0).description);
 				results.put("Current temperature", resultClass.main.temp.toString() + " °C");
 				results.put("Maximum temperature", resultClass.main.temp_max.toString() + " °C");
 				results.put("Minimum temperature", resultClass.main.temp_min.toString() + " °C");
 				results.put("Humidity level", resultClass.main.humidity.toString());
 				results.put("Wind speed", resultClass.wind.speed.toString() + " Km");
-				/*JSONObject jsonObject = new JSONObject(output);
-
-				JSONObject sys = jsonObject.getJSONObject("sys");
-				JSONArray weather = jsonObject.getJSONArray("weather");
-				JSONObject main = jsonObject.getJSONObject("main");
-				JSONObject wind = jsonObject.getJSONObject("wind");
-				results.put("Country", sys.getString("country"));
-			    results.put("Weather description",weather.getJSONObject(0).getString("description"));
-				results.put("Current temperature", Double.toString(main.getDouble("temp")) + " °C");
-				results.put("Maximum temperature", Double.toString(main.getDouble("temp_max")) + " °C");
-				results.put("Minimum temperature", Double.toString(main.getDouble("temp_min")) + " °C");
-				results.put("Humidity level", Double.toString(main.getDouble("humidity")));
-				results.put("Wind speed", Double.toString(wind.getDouble("speed")) + " Km");*/
 			} else {
-				
 				throw new Exception("Unable get result from web-service call!");
-				
 			}
 			conn.disconnect();
 			return results;
-				
 		} catch (Exception ex) {
-			
 			ex.printStackTrace();
 			return results;
-			
 		}
 	}
 	private WebServiceResponseJson parseJsonObj(String jsonString) {
-        WebServiceResponseJson result = null;
-        try {
-            Gson gson = new Gson();
-            result = gson.fromJson(jsonString,WebServiceResponseJson.class);
-        } catch(Exception ex) {
-            ex.printStackTrace();
-        }
-        return result;
-    }
-
+		WebServiceResponseJson result = null;
+		try {
+			Gson gson = new Gson();
+			result = gson.fromJson(jsonString,WebServiceResponseJson.class);
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		return result;
+	}
+	private void loadCountriesToMap() {
+		InputStream in = getClass().getResourceAsStream("/countries.txt"); 
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(in))) {
+			String line;
+			while ((line = br.readLine()) != null) {
+				String[] values = line.split("[|]");
+				countriesCodeName.put(values[0], values[1]);
+			}
+		}
+		catch(Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 }

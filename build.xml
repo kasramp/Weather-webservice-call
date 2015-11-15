@@ -59,15 +59,22 @@ Author(s):
 				<attribute name="Main-Class" value="CallWebservice"/>
 			</manifest>
 			<zipgroupfileset dir="${lib.dir}" includes="*.jar"/>
+			<fileset file="countries.txt" />
 		</jar>
 	</target>
 
 	<target name="main" depends="jar">
+		<!-- <copy file="countries.txt" todir="${build.dir}"/> -->
 	</target>	  
 
    <!-- Cleans up the current ${build.dir} -->
    <target name="clean">
-      <delete dir="${build.dir}}"/>
+      <delete dir="${build.dir}"/>
    </target>
-   
+	
+	<target name="install" depends="main">
+		<exec executable="/bin/bash">
+		<arg value="install.sh"/>
+		</exec>
+		</target>   
 </project>
