@@ -64,7 +64,11 @@ public class WeatherForecast {
 				}
 				country = ldrj.country;
 				city = ldrj.city;
-				region = ldrj.region + ",";
+				if(ldrj.region != null && !ldrj.region.isEmpty()) {			
+					region = ldrj.region + ",";
+				} else {
+					region = "";
+				}
 			}
 			String urlString = "http://api.openweathermap.org/data/2.5/weather?appid=c15e2598880e57fad011a64061948fac&q=";
 			if ((country != null && country.length()>0)&& (city != null && city.length()>0)){
