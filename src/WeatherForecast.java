@@ -20,6 +20,7 @@ import java.net.URL;
 import java.util.Scanner;
 import java.util.TreeMap;
 import com.google.gson.Gson;
+import java.net.URI;
 
 public class WeatherForecast {
 	private TreeMap<String,String> countriesCodeName;
@@ -79,6 +80,8 @@ public class WeatherForecast {
 			}
 			urlString += "&units=metric";
 			URL url = new URL(urlString);
+			URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+			url = uri.toURL();
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
 			conn.setRequestProperty("Accept","application/json");
