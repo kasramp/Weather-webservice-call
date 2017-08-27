@@ -30,11 +30,11 @@ New Way :
 
 	$ ant
 
-##Contact
+## Contact
 * kasra@madadipouya.com  
 * kasra_mp@live.com  
 
-##License
+## License
 Weather web-service call is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License version 3
 as published by the Free Software Foundation.
@@ -46,4 +46,4 @@ GNU General Public License for more details.  <http://www.gnu.org/licenses/>
 
 Author(s):
 
-© 2015 Kasra Madadipouya <kasra@madadipouya.com>
+© 2015-2017 Kasra Madadipouya <kasra@madadipouya.com>
