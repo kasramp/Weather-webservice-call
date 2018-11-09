@@ -32,7 +32,6 @@ New Way :
 
 ## Contact
 * kasra@madadipouya.com  
-* kasra_mp@live.com  
 
 ## License
 Weather web-service call is free software; you can redistribute it and/or modify
